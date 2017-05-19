@@ -15,8 +15,39 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example', require('./components/Example.vue'));
+Vue.component('ast-bet-on-odd', require('./components/AstBetOnOdd.vue'));
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+
+    data: {
+
+    },
+
+    methods: {
+
+        onBet: function onBet(betData) {
+            // after bet was click
+            // AJAX: post the bet data
+            // AJAX: if successfull it will return confirmation
+            //      with the data
+            console.log('Bet was click ' + betData);
+
+            axios.post(`http://sb.app/bet`,
+                {
+                    data: betData
+                },
+                {
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                }
+            )
+            .then((response) => {
+                console.log(response.data);
+            })
+            .catch((response) => {
+                //this.errors.push(e)
+                console.log(response);
+            });
+        },
+    }
 });
