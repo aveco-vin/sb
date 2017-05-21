@@ -790,23 +790,21 @@ Vue.component('ast-bet-on-odd', __webpack_require__(36));
 var app = new Vue({
     el: '#app',
 
-    data: {},
+    data: {
+        playerInfo: {
+            playerId: document.getElementById('user_id').value,
+            credit: 0
+        },
+        gameInfo: {
+            gameId: 0
+        }
+    },
 
     methods: {
 
         onBet: function onBet(betData) {
-            // after bet was click
-            // AJAX: post the bet data
-            // AJAX: if successfull it will return confirmation
-            //      with the data
-            console.log('Bet was click ' + betData);
-
-            axios.post('http://sb.app/bet', {
-                data: betData
-            }, {
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-            }).then(function (response) {
-                console.log(response.data);
+            axios.post('http://sb.app/bet', betData).then(function (response) {
+                console.log(response);
             }).catch(function (response) {
                 //this.errors.push(e)
                 console.log(response);
@@ -1722,7 +1720,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function data() {
         return {
             betButtonLabel: 'Bet',
-            bet: 0,
 
             askConfirmation: false,
             confirmation: '',
@@ -1731,9 +1728,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             bankerBet: 0,
             playerBet: 0,
 
-            userSide: '',
-            userOdd: '',
-            userBet: ''
+            betOn: '',
+            betOdd: '',
+            amount: '0'
         };
     },
 
@@ -1751,21 +1748,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.confirmation = 'Confirm your bet on ODD ' + odd + ' (' + amt + ') ?';
             this.askConfirmation = true;
         },
-        onPlaceBet: function onPlaceBet(side, odd, bet) {
+        onPlaceBet: function onPlaceBet(side, betOnOdd, amount) {
             switch (side) {
                 case 'b':
                     console.log('bet on banker');
-                    this.createConfirmation(odd, bet);
-                    this.userSide = 'banker';
-                    this.userOdd = odd;
-                    this.userBet = bet;
+                    this.createConfirmation(betOnOdd, amount);
+                    this.betOn = 'b';
+                    this.betOdd = betOnOdd;
+                    this.amount = amount;
                     break;
                 case 'p':
                     console.log('bet on player');
-                    this.createConfirmation(odd, bet);
-                    this.userSide = 'player';
-                    this.userOdd = odd;
-                    this.userBet = bet;
+                    this.createConfirmation(betOnOdd, amount);
+                    this.betOn = 'p';
+                    this.betOdd = betOnOdd;
+                    this.amount = amount;
                     break;
             }
         },
@@ -1773,22 +1770,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.askConfirmation = false;
             if (ans) {
                 var actionData = {
-                    'user': 'user_id',
-                    'action': 'bet',
-                    'event': '1',
-                    'fight': '1',
-                    'side': this.userSide,
-                    'odd': this.userOdd,
-                    'amt': this.userBet
+                    'gameId': this.$parent.$data.gameInfo.gameId,
+                    'userId': this.$parent.$data.playerInfo.playerId,
+                    'betOn': this.betOn,
+                    'odd': this.betOdd,
+                    'amount': this.amount
                 };
                 console.log(actionData);
-                this.$emit('bet', JSON.stringify(actionData));
+                this.$emit('bet', actionData);
             }
             this.bankerBet = 0;
             this.playerBet = 0;
-            this.userSide = '';
-            this.userOdd = '';
-            this.userBet = '';
+            this.betOn = '';
+            this.betOdd = '';
+            this.amount = '0';
         }
     }
 });
@@ -31857,7 +31852,7 @@ var Component = __webpack_require__(37)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\nginx\\html\\sb\\resources\\assets\\js\\components\\AstBetOnOdd.vue"
+Component.options.__file = "D:\\dev\\web\\sb\\resources\\assets\\js\\components\\AstBetOnOdd.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] AstBetOnOdd.vue: functional components are not supported with templates, they should use render functions.")}
 

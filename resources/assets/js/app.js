@@ -21,28 +21,21 @@ const app = new Vue({
     el: '#app',
 
     data: {
-
+        playerInfo: {
+            playerId: document.getElementById('user_id').value,
+            credit: 0,
+        },
+        gameInfo: {
+            gameId: 0,
+        }
     },
 
     methods: {
 
         onBet: function onBet(betData) {
-            // after bet was click
-            // AJAX: post the bet data
-            // AJAX: if successfull it will return confirmation
-            //      with the data
-            console.log('Bet was click ' + betData);
-
-            axios.post(`http://sb.app/bet`,
-                {
-                    data: betData
-                },
-                {
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-                }
-            )
+            axios.post('http://sb.app/bet', betData)
             .then((response) => {
-                console.log(response.data);
+                console.log(response);
             })
             .catch((response) => {
                 //this.errors.push(e)

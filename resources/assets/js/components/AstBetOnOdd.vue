@@ -52,7 +52,6 @@
         data: function data() {
             return {
                 betButtonLabel: 'Bet',
-                bet: 0,
 
                 askConfirmation: false,
                 confirmation: '',
@@ -61,9 +60,9 @@
                 bankerBet: 0,
                 playerBet: 0,
 
-                userSide: '',
-                userOdd: '',
-                userBet: '',
+                betOn: '',
+                betOdd: '',
+                amount: '0',
             }
         },
 
@@ -83,21 +82,21 @@
                 this.askConfirmation = true;
             },
 
-            onPlaceBet(side, odd, bet) {
+            onPlaceBet(side, betOnOdd, amount) {
                 switch(side) {
                     case 'b':
                         console.log('bet on banker');
-                        this.createConfirmation(odd, bet);
-                        this.userSide = 'banker';
-                        this.userOdd = odd;
-                        this.userBet = bet;
+                        this.createConfirmation(betOnOdd, amount);
+                        this.betOn = 'b';
+                        this.betOdd = betOnOdd;
+                        this.amount = amount;
                         break;
                     case 'p':
                         console.log('bet on player');
-                        this.createConfirmation(odd, bet);
-                        this.userSide = 'player';
-                        this.userOdd = odd;
-                        this.userBet = bet;
+                        this.createConfirmation(betOnOdd, amount);
+                        this.betOn = 'p';
+                        this.betOdd = betOnOdd;
+                        this.amount = amount;
                         break;
                 }
             },
@@ -105,23 +104,21 @@
             onConfirmBet(ans) {
                 this.askConfirmation = false;
                 if (ans) {
-                    let actionData = {
-                        'user': 'user_id',
-                        'action': 'bet',
-                        'event': '1',
-                        'fight': '1',
-                        'side': this.userSide,
-                        'odd': this.userOdd,
-                        'amt': this.userBet
+                    var actionData = {
+                        'gameId': this.$parent.$data.gameInfo.gameId,
+                        'userId': this.$parent.$data.playerInfo.playerId,
+                        'betOn': this.betOn,
+                        'odd': this.betOdd,
+                        'amount': this.amount
                     };
                     console.log(actionData);
-                    this.$emit('bet', JSON.stringify(actionData));
+                    this.$emit('bet', actionData);
                 }
                 this.bankerBet = 0;
                 this.playerBet = 0;
-                this.userSide = '';
-                this.userOdd = '';
-                this.userBet = '';
+                this.betOn = '';
+                this.betOdd = '';
+                this.amount = '0';
             },
         },
     }

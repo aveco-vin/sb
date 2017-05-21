@@ -2,29 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\FightBet;
-use Barryvdh\Debugbar\Middleware\Debugbar;
+use App\Bet;
 use Illuminate\Http\Request;
 
 class BetController extends Controller
 {
     public function placeBet(Request $request)
     {
-        $obj = $request->json('data.amt');
-
-        return $obj;
-
-//        $request->input('amt');
-
-//        FightBet::create($request->all());
-//        $fb = new FightBet();
-//        $fb->action = 'bet';
-//        $fb->amt = '50';
-//        $fb->event = '1';
-//        $fb->fight = '1';
-//        $fb->odd = '110';
-//        $fb->side = 'b';
-//        $fb->user = '1';
-//        $fb->save();
+        $bet = new Bet();
+//        $bet->transaction   = $request->input('1000001');
+        $bet->transaction   = $bet->generateTransactionId();
+        $bet->game_id       = $request->input('gameId');
+        $bet->user_id       = $request->input('userId');
+        $bet->bet_on        = $request->input('betOn');
+        $bet->odds          = $request->input('odd');
+        $bet->amount        = $request->input('amount');
+        $bet->save();
     }
 }
